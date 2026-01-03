@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/astro_background.dart'; // Make sure this import is here
+import '../widgets/astro_background.dart';
 import 'home_screen.dart';
 import 'signup_screen.dart';
 
@@ -27,10 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: extendBodyBehindAppBar lets the gradient show at the very top
-      extendBodyBehindAppBar: true, 
-      
-      // key: This widget applies your Amber-to-Cream gradient + Stars
+      extendBodyBehindAppBar: true,
       body: AstroBackground(
         child: Center(
           child: SingleChildScrollView(
@@ -40,16 +37,12 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo (No white box around it)
                   Image.asset(
                     'assets/image1.png',
                     height: 120,
                     fit: BoxFit.contain,
                   ),
-                  
                   const SizedBox(height: 10),
-                  
-                  // "Login" Title
                   const Text(
                     "Login",
                     style: TextStyle(
@@ -58,16 +51,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                       shadows: [
                         Shadow(
-                          offset: Offset(0, 2), 
-                          blurRadius: 4, 
-                          color: Colors.black26
+                          offset: Offset(0, 2),
+                          blurRadius: 4,
+                          color: Colors.black26,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 40),
 
-                  // Email Field
+                  // Email Input
                   TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
@@ -75,20 +68,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30), 
-                        borderSide: BorderSide.none
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 24
                       ),
-                      // Icon uses your Theme Color (#F6A623)
                       prefixIcon: const Icon(Icons.email, color: Color(0xFFF6A623)),
                     ),
                     validator: (v) => v!.isEmpty ? "Enter email" : null,
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field
+                  // Password Input
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
@@ -97,61 +89,62 @@ class _LoginScreenState extends State<LoginScreen> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30), 
-                        borderSide: BorderSide.none
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 24
                       ),
-                      // Icon uses your Theme Color (#F6A623)
                       prefixIcon: const Icon(Icons.lock, color: Color(0xFFF6A623)),
                     ),
                     validator: (v) => v!.isEmpty ? "Enter password" : null,
                   ),
                   const SizedBox(height: 30),
 
-                  // Login Button
+                  // Login Button (White button, Orange text)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      // Text color uses your Theme Color (#F6A623)
-                      foregroundColor: const Color(0xFFF6A623), 
+                      foregroundColor: const Color(0xFFF6A623),
                       minimumSize: const Size(double.infinity, 55),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       elevation: 4,
                     ),
                     onPressed: _login,
                     child: const Text(
-                      "Login", 
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                      "Login",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Sign Up Button
+                  // FIX: Sign Up Button changed to Amber color for visibility
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.white, width: 2),
+                      // Changed from Colors.white to the Theme Orange so it is visible on cream background
+                      side: const BorderSide(color: Color(0xFFF6A623), width: 2),
                       minimumSize: const Size(double.infinity, 55),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)
+                        borderRadius: BorderRadius.circular(30),
                       ),
+                      backgroundColor: Colors.white.withOpacity(0.5), // Semi-transparent white
                     ),
                     onPressed: () {
                       Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => const SignupScreen())
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignupScreen()),
                       );
                     },
                     child: const Text(
-                      "Sign Up", 
+                      "Sign Up",
                       style: TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold, 
-                        color: Colors.white
-                      )
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        // Changed text color to Orange/Amber
+                        color: Color(0xFFF6A623),
+                      ),
                     ),
                   ),
                 ],
