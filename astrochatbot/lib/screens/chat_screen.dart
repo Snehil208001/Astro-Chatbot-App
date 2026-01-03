@@ -27,7 +27,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _initializeModel();
-    // Initial greeting from the Astrologer persona
+    // Initial greeting
     _addMessage("ai", "Namaste ${widget.userName}. I am here to guide you. The stars align to shed light on your ${widget.concern}. Ask me anything, and we shall look into your Kundli.");
   }
 
@@ -43,7 +43,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print("✅ API Key found. Initializing Gemini Model...");
     try {
       _model = GenerativeModel(
-        // 'gemini-1.5-flash' works with google_generative_ai ^0.9.0
+        // FIXED: Use 'gemini-1.5-flash'. 'gemini-pro' is deprecated.
         model: 'gemini-1.5-flash', 
         apiKey: apiKey,
         systemInstruction: Content.system("""
@@ -97,7 +97,6 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
 
-      // Send message using the official SDK
       final content = [Content.text(text)];
       final response = await _model.generateContent(content);
 
@@ -110,7 +109,12 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     } catch (e) {
       print("❌ EXCEPTION during API call: $e");
-      _addMessage("ai", "A spiritual disturbance occurred: $e");
+      // Use a more helpful error message for the user
+      if (e.toString().contains("404")) {
+         _addMessage("ai", "Configuration Error: The AI model could not be reached. Please check your API Key settings.");
+      } else {
+         _addMessage("ai", "A spiritual disturbance occurred: $e");
+      }
     } finally {
       setState(() => _isLoading = false);
     }
