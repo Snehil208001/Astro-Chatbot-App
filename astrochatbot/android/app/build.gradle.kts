@@ -3,14 +3,15 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // ADDED: This plugin is required for Firebase to work
+    id("com.google.gms.google-services") 
 }
 
 android {
     namespace = "com.example.astrochatbot"
     compileSdk = flutter.compileSdkVersion
     
-    // FIX: Use double quotes ("") for strings in Kotlin, not single quotes ('').
-    // You can also usually comment this line out to let Flutter choose the default NDK.
+    // You can usually comment this line out to let Flutter choose the default NDK.
     ndkVersion = "27.0.12077973"
 
     compileOptions {
