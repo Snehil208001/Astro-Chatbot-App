@@ -62,8 +62,8 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
 
-      final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey');
-      
+// Updated to use the latest 'gemini-2.5-flash' model
+final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey');      
       // 2. CONSTRUCT THE PERSONA PROMPT
       final String systemPrompt = """
       You are a professional Vedic astrologer.
