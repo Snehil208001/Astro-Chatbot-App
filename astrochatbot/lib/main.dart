@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
+  // Required for async operations in main
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase (uses google-services.json)
+  await Firebase.initializeApp();
   runApp(const AstroChatbotApp());
 }
 

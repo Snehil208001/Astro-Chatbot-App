@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/astro_background.dart';
 import 'home_screen.dart';
 
@@ -11,6 +12,49 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  
+  // Controllers to capture user input
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Function to handle Sign Up
+  Future<void> _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Create user in Firebase
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+        // If successful, navigate to Home
+        if (mounted) {
+          Navigator.pushReplacement(
+            context, 
+            MaterialPageRoute(builder: (context) => const HomeScreen())
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        // Show error message if signup fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? "Signup failed"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    // Clean up controllers
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +77,6 @@ class _SignupScreenState extends State<SignupScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // REPLACED Icon with the Image
                   Image.asset(
                     'assets/image1.png',
                     height: 120,
@@ -59,11 +102,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 40),
                   
-                  _buildField("Full Name", Icons.person),
+                  _buildField("Full Name", Icons.person, controller: _nameController),
                   const SizedBox(height: 16),
-                  _buildField("Email", Icons.email),
+                  _buildField("Email", Icons.email, controller: _emailController),
                   const SizedBox(height: 16),
-                  _buildField("Password", Icons.lock, obscure: true),
+                  _buildField("Password", Icons.lock, obscure: true, controller: _passwordController),
                   const SizedBox(height: 30),
                   
                   // Sign Up Button (White button, Orange text)
@@ -77,14 +120,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       elevation: 4,
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushReplacement(
-                          context, 
-                          MaterialPageRoute(builder: (context) => const HomeScreen())
-                        );
-                      }
-                    },
+                    onPressed: _signUp,
                     child: const Text(
                       "Sign Up", 
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
@@ -100,8 +136,9 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   // Helper widget to keep code clean
-  Widget _buildField(String hint, IconData icon, {bool obscure = false}) {
+  Widget _buildField(String hint, IconData icon, {bool obscure = false, TextEditingController? controller}) {
     return TextFormField(
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,

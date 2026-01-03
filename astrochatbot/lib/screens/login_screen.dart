@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/astro_background.dart';
 import 'home_screen.dart';
 import 'signup_screen.dart';
@@ -15,12 +16,31 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void _login() {
+  // Function to handle Login
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      try {
+        // Sign in with Firebase
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        // Show error message if login fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? "Login failed"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -120,16 +140,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // FIX: Sign Up Button changed to Amber color for visibility
+                  // Sign Up Button
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      // Changed from Colors.white to the Theme Orange so it is visible on cream background
                       side: const BorderSide(color: Color(0xFFF6A623), width: 2),
                       minimumSize: const Size(double.infinity, 55),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      backgroundColor: Colors.white.withOpacity(0.5), // Semi-transparent white
+                      backgroundColor: Colors.white.withOpacity(0.5), 
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -142,7 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        // Changed text color to Orange/Amber
                         color: Color(0xFFF6A623),
                       ),
                     ),

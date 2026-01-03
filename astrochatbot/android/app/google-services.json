@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "846596845724",
+    "project_id": "astrochatbot-96fbe",
+    "storage_bucket": "astrochatbot-96fbe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846596845724:android:476d17df20db9578b9bd59",
+        "android_client_info": {
+          "package_name": "com.example.astrochatbot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiMquDiX8Rywos_zIcrg8krke9QS3WQbk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
