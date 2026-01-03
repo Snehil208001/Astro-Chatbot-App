@@ -4,7 +4,8 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.4
+  # CHANGED: Fixed this to range 3.0.0 to 4.0.0 (Valid Dart version)
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -15,8 +16,9 @@ dependencies:
   google_fonts: ^6.1.0
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
-  # ADD THIS:
   flutter_dotenv: ^5.1.0
+  # CHANGED: Downgraded to a version compatible with your Flutter setup
+  google_generative_ai: ^0.4.7
 
 dev_dependencies:
   flutter_test:
@@ -25,8 +27,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  # UPDATE ASSETS TO INCLUDE .env
   assets:
     - assets/
     - .env

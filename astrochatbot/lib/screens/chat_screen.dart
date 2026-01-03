@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import dotenv
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 import '../widgets/astro_background.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -19,12 +18,50 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
+  
+  // Model variable
+  late final GenerativeModel _model;
+  bool _isModelInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    _initializeModel();
     // Initial greeting from the Astrologer persona
     _addMessage("ai", "Namaste ${widget.userName}. I am here to guide you. The stars align to shed light on your ${widget.concern}. Ask me anything, and we shall look into your Kundli.");
+  }
+
+  void _initializeModel() {
+    final apiKey = dotenv.env['GEMINI_API_KEY'];
+    
+    if (apiKey == null || apiKey.isEmpty) {
+      print("❌ CRITICAL ERROR: GEMINI_API_KEY is missing from .env file");
+      _addMessage("ai", "Error: API Key not found. Please check your .env file.");
+      return;
+    }
+
+    print("✅ API Key found. Initializing Gemini Model...");
+    try {
+      _model = GenerativeModel(
+        // 'gemini-1.5-flash' works with google_generative_ai ^0.9.0
+        model: 'gemini-1.5-flash', 
+        apiKey: apiKey,
+        systemInstruction: Content.system("""
+        You are a professional Vedic astrologer.
+        Speak calmly and wisely.
+        Use astrology concepts like kundli, graha, dasha, lagna.
+        Never say you are an AI.
+        Give guidance, not absolute predictions.
+        User Name: ${widget.userName}
+        User Concern: ${widget.concern}
+        """),
+      );
+      _isModelInitialized = true;
+      print("✅ Model initialized successfully.");
+    } catch (e) {
+      print("❌ Model initialization failed: $e");
+      _addMessage("ai", "Initialization error: $e");
+    }
   }
 
   void _addMessage(String role, String text) {
@@ -52,53 +89,27 @@ class _ChatScreenState extends State<ChatScreen> {
     _addMessage("user", text);
     setState(() => _isLoading = true);
 
+    print("📤 Sending message to Gemini: $text");
+
     try {
-      // 1. SECURELY GET API KEY
-      final apiKey = dotenv.env['GEMINI_API_KEY'];
-      
-      if (apiKey == null || apiKey.isEmpty) {
-        _addMessage("ai", "Error: API Key not found. Please check your .env file.");
-        setState(() => _isLoading = false);
+      if (!_isModelInitialized) {
+        _addMessage("ai", "I cannot read the stars (API Key missing or invalid).");
         return;
       }
 
-// Updated to use the latest 'gemini-2.5-flash' model
-final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$apiKey');      
-      // 2. CONSTRUCT THE PERSONA PROMPT
-      final String systemPrompt = """
-      You are a professional Vedic astrologer.
-      Speak calmly and wisely.
-      Use astrology concepts like kundli, graha, dasha, lagna.
-      Never say you are an AI.
-      Give guidance, not absolute predictions.
-      
-      User Name: ${widget.userName}
-      User Concern: ${widget.concern}
-      Current Question: $text
-      """;
+      // Send message using the official SDK
+      final content = [Content.text(text)];
+      final response = await _model.generateContent(content);
 
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "contents": [{
-            "parts": [{"text": systemPrompt}]
-          }]
-        }),
-      );
+      print("📥 Received response: ${response.text}");
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['candidates'] != null && data['candidates'].isNotEmpty) {
-           final aiResponse = data['candidates'][0]['content']['parts'][0]['text'];
-           _addMessage("ai", aiResponse);
-        } else {
-           _addMessage("ai", "The stars are cloudy today. Please try again.");
-        }
+      if (response.text != null && response.text!.isNotEmpty) {
+         _addMessage("ai", response.text!);
       } else {
-        _addMessage("ai", "I cannot read the stars right now (API Error: ${response.statusCode}).");
+         _addMessage("ai", "The stars are cloudy today. Please try again.");
       }
     } catch (e) {
+      print("❌ EXCEPTION during API call: $e");
       _addMessage("ai", "A spiritual disturbance occurred: $e");
     } finally {
       setState(() => _isLoading = false);
