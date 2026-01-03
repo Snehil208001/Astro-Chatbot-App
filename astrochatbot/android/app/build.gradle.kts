@@ -8,7 +8,10 @@ plugins {
 android {
     namespace = "com.example.astrochatbot"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    
+    // FIX: Use double quotes ("") for strings in Kotlin, not single quotes ('').
+    // You can also usually comment this line out to let Flutter choose the default NDK.
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
