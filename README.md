@@ -1,12 +1,17 @@
 🌟 Astro Chatbot – Flutter Intern Task
 
-Astro Chatbot is a Flutter-based astrology chatbot application where users log in using email & password, submit their birth details, and chat with an AI-powered astrologer that responds in a calm, spiritual, Vedic tone.
+Astro Chatbot is a Flutter-based astrology chatbot application where users log in using email and password, submit their birth details, and chat with an AI-powered astrologer that responds in a calm, spiritual, Vedic tone.
 
 This project was developed as part of a Flutter Intern Assignment to demonstrate UI development, form validation, state handling, and AI API integration.
 
 📱 Screenshots
+
+📌 Images are stored in the assets/ folder of this repository.
+
+Authentication Screens
 Login	Signup
 <img src="assets/login.png" width="250"/>	<img src="assets/signup.png" width="250"/>
+Application Screens
 Astrology Details Form	Astrologer Chat
 <img src="assets/homescreen.png" width="250"/>	<img src="assets/chatscreen.png" width="250"/>
 🎯 Objective
@@ -36,9 +41,11 @@ Email & Password Login / Signup
 
 Firebase Authentication
 
-Auto-redirect based on auth state
+Auto-redirect based on authentication state
 
 📝 Astrology Details Form (Mandatory)
+
+Form Fields
 
 Full Name
 
@@ -70,25 +77,33 @@ General
 
 Left-aligned AI messages
 
-Right-aligned User messages
+Right-aligned user messages
 
-Typing indicator while AI responds
+Typing indicator while AI is responding
 
-Auto-scroll to latest message
+Auto-scroll to the latest message
 
-Calm, wise, Vedic astrologer persona
+Astrologer Persona
 
-Uses astrology terms (kundli, graha, dasha, lagna)
+Calm, wise, and spiritual tone
 
-Never reveals it is an AI
+Uses astrology terminology (kundli, graha, dasha, lagna)
+
+Friendly and respectful
+
+Never reveals that it is an AI
 
 🤖 AI Integration
 
 Google Gemini API
 
-REST API using http
+REST API integration using http
 
-Basic error handling for failed responses
+Sends user messages to AI
+
+Displays AI responses in chat UI
+
+Basic error handling for API failures
 
 🛠️ Tech Stack
 
@@ -130,7 +145,7 @@ Create a Firebase project
 
 Enable Email/Password Authentication
 
-Add config files:
+Add configuration files:
 
 android/app/google-services.json
 
@@ -138,19 +153,19 @@ ios/Runner/GoogleService-Info.plist
 
 4️⃣ Environment Variables
 
-Create a .env file in root:
+Create a .env file in the root directory:
 
 API_KEY=your_gemini_api_key_here
 
 
-⚠️ Do not commit .env file
+⚠️ Do NOT commit the .env file
 
 5️⃣ Run the App
 flutter run
 
 📂 Project Structure
 lib/
-├── main.dart                 # App entry & auth gate
+├── main.dart                 # App entry point & auth gate
 ├── screens/
 │   ├── login_screen.dart     # Login UI
 │   ├── signup_screen.dart    # Signup UI
@@ -158,6 +173,11 @@ lib/
 │   └── chat_screen.dart      # AI chat logic
 └── widgets/
     └── astro_background.dart # Reusable background UI
+assets/
+├── login.png
+├── signup.png
+├── homescreen.png
+└── chatscreen.png
 
 ✅ MVP Checklist (Task Requirements)
 
@@ -185,13 +205,14 @@ Premium chat features
 
 📌 Notes
 
-Backend & chat persistence are optional as per task scope
+Backend and chat persistence are optional as per task scope
 
-Focus is on clean UI, logic, and code quality
+Focus is on clean UI, logic, and readable code
 
-Over-engineering avoided intentionally
+Over-engineering intentionally avoided
 
-👨‍💻 Developed by
+👨‍💻 Developed By
 
 Snehil
-Flutter Developer | Internship Submission
+Flutter Developer
+Internship Submission
