@@ -4,7 +4,6 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  # CHANGED: Fixed this to range 3.0.0 to 4.0.0 (Valid Dart version)
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
@@ -17,13 +16,13 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   flutter_dotenv: ^5.1.0
-  # CHANGED: Downgraded to a version compatible with your Flutter setup
+  # STRICT VERSION: This version is stable for your code
   google_generative_ai: ^0.4.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true

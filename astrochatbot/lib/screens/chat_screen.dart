@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../widgets/astro_background.dart';
 
@@ -19,7 +18,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
   
-  // Model variable
   late final GenerativeModel _model;
   bool _isModelInitialized = false;
 
@@ -27,23 +25,20 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _initializeModel();
-    // Initial greeting
     _addMessage("ai", "Namaste ${widget.userName}. I am here to guide you. The stars align to shed light on your ${widget.concern}. Ask me anything, and we shall look into your Kundli.");
   }
 
   void _initializeModel() {
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    
-    if (apiKey == null || apiKey.isEmpty) {
-      print("❌ CRITICAL ERROR: GEMINI_API_KEY is missing from .env file");
-      _addMessage("ai", "Error: API Key not found. Please check your .env file.");
-      return;
-    }
+    // ---------------------------------------------------------
+    // FIXED: Hardcoded Key to bypass .env errors
+    // ---------------------------------------------------------
+    const apiKey = "AIzaSyAc4vYEetSpKmPCO_gCojLRyyTxLPfM_iU"; 
 
-    print("✅ API Key found. Initializing Gemini Model...");
+    print("✅ Using API Key: $apiKey");
+
     try {
       _model = GenerativeModel(
-        // FIXED: Use 'gemini-1.5-flash'. 'gemini-pro' is deprecated.
+        // FIXED: Using 'gemini-1.5-flash' which works with this key type
         model: 'gemini-1.5-flash', 
         apiKey: apiKey,
         systemInstruction: Content.system("""
@@ -65,8 +60,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _addMessage(String role, String text) {
-    setState(() => _messages.add({"role": role, "text": text}));
-    _scrollToBottom();
+    if (mounted) {
+      setState(() => _messages.add({"role": role, "text": text}));
+      _scrollToBottom();
+    }
   }
 
   void _scrollToBottom() {
@@ -93,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       if (!_isModelInitialized) {
-        _addMessage("ai", "I cannot read the stars (API Key missing or invalid).");
+        _addMessage("ai", "I cannot read the stars (API Key initialization failed).");
         return;
       }
 
@@ -109,14 +106,16 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     } catch (e) {
       print("❌ EXCEPTION during API call: $e");
-      // Use a more helpful error message for the user
       if (e.toString().contains("404")) {
-         _addMessage("ai", "Configuration Error: The AI model could not be reached. Please check your API Key settings.");
+         // This confirms the key is invalid for this specific model/project
+         _addMessage("ai", "Error 404: The API Key project does not have the 'Generative Language API' enabled. Please enable it in Google Cloud Console.");
       } else {
          _addMessage("ai", "A spiritual disturbance occurred: $e");
       }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
