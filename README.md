@@ -10,10 +10,10 @@ This project was developed as part of a Flutter Intern Assignment to demonstrate
 
 Authentication Screens
 Login	Signup
-<img src="assets/login.png" width="250"/>	<img src="assets/signup.png" width="250"/>
+<img src="astrochatbot/assets/login.png" width="250"/>	<img src="astrochatbot/assets/signup.png" width="250"/>
 Application Screens
 Astrology Details Form	Astrologer Chat
-<img src="assets/homescreen.png" width="250"/>	<img src="assets/chatscreen.png" width="250"/>
+<img src="astrochatbot/assets/homescreen.png" width="250"/>	<img src="astrochatbot/assets/chatscreen.png" width="250"/>
 🎯 Objective
 
 Collect basic user and birth details
