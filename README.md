@@ -4,16 +4,35 @@ Astro Chatbot is a Flutter-based astrology chatbot application where users log i
 
 This project was developed as part of a Flutter Intern Assignment to demonstrate UI development, form validation, state handling, and AI API integration.
 
-📱 Screenshots
+## 📱 Screenshots
 
-📌 Images are stored in the assets/ folder of this repository.
+📌 Images are stored in the `assets/` folder of this repository.
 
-Authentication Screens
-Login	Signup
-<img src="astrochatbot/assets/login.png" width="250"/>	<img src="astrochatbot/assets/signup.png" width="250"/>
-Application Screens
-Astrology Details Form	Astrologer Chat
-<img src="astrochatbot/assets/homescreen.png" width="250"/>	<img src="astrochatbot/assets/chatscreen.png" width="250"/>
+### Authentication Screens
+
+| Login | Signup |
+|------|--------|
+| <img src="astrochatbot/assets/login.png" width="160"/> | <img src="astrochatbot/assets/signup.png" width="160"/> |
+
+---
+
+### Application Screens
+
+| Astrology Details Form | Astrologer Chat |
+|----------------------|----------------|
+| <img src="astrochatbot/assets/homescreen.png" width="160"/> | <img src="astrochatbot/assets/chatscreen.png" width="160"/> |
+
+## 🎥 Video Demo
+
+A short video demonstration of the application showcasing:
+- Authentication flow (Login / Signup)
+- Astrology details form submission
+- AI astrologer chat interaction
+
+📌 **Google Drive Link:**  
+https://drive.google.com/file/d/1mZ1WJ4I634WBDh9CW2eNtdNSUCWeVR35/view?usp=sharing
+
+
 🎯 Objective
 
 Collect basic user and birth details
@@ -133,7 +152,7 @@ Firebase Project
 Google Gemini API Key
 
 1️⃣ Clone Repository
-git clone https://github.com/yourusername/astro-chatbot-app.git
+git clone https://github.com/Snehil208001/Astro-Chatbot-App
 cd astrochatbot
 
 2️⃣ Install Dependencies
