@@ -16,9 +16,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // State variable to track loading status
+  bool _isLoading = false;
+
   // Function to handle Login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true; // Start loading
+      });
+
       try {
         // Sign in with Firebase
         await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -34,12 +41,20 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } on FirebaseAuthException catch (e) {
         // Show error message if login fails
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message ?? "Login failed"),
-            backgroundColor: Colors.red,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.message ?? "Login failed"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Stop loading regardless of success/failure
+          });
+        }
       }
     }
   }
@@ -80,9 +95,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Email Input
+                  // Email Input with Validation
                   TextFormField(
                     controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: "Email",
                       filled: true,
@@ -92,11 +108,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24
-                      ),
-                      prefixIcon: const Icon(Icons.email, color: Color(0xFFF6A623)),
+                          vertical: 16, horizontal: 24),
+                      prefixIcon:
+                          const Icon(Icons.email, color: Color(0xFFF6A623)),
                     ),
-                    validator: (v) => v!.isEmpty ? "Enter email" : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return "Enter email";
+                      }
+                      // Basic email regex validation
+                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                      if (!emailRegex.hasMatch(v)) {
+                        return "Enter a valid email address";
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
 
@@ -113,15 +139,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide.none,
                       ),
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24
-                      ),
-                      prefixIcon: const Icon(Icons.lock, color: Color(0xFFF6A623)),
+                          vertical: 16, horizontal: 24),
+                      prefixIcon:
+                          const Icon(Icons.lock, color: Color(0xFFF6A623)),
                     ),
                     validator: (v) => v!.isEmpty ? "Enter password" : null,
                   ),
                   const SizedBox(height: 30),
 
-                  // Login Button (White button, Orange text)
+                  // Login Button with Loading Indicator
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -132,30 +158,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 4,
                     ),
-                    onPressed: _login,
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    onPressed: _isLoading ? null : _login, // Disable if loading
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Color(0xFFF6A623),
+                            ),
+                          )
+                        : const Text(
+                            "Login",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
                   ),
                   const SizedBox(height: 20),
 
                   // Sign Up Button
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFFF6A623), width: 2),
+                      side:
+                          const BorderSide(color: Color(0xFFF6A623), width: 2),
                       minimumSize: const Size(double.infinity, 55),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      backgroundColor: Colors.white.withOpacity(0.5), 
+                      backgroundColor: Colors.white.withOpacity(0.5),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignupScreen()),
-                      );
-                    },
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignupScreen()),
+                            );
+                          },
                     child: const Text(
                       "Sign Up",
                       style: TextStyle(

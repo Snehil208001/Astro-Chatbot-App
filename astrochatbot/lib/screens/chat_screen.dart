@@ -2,16 +2,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../widgets/astro_background.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userName;
   final String concern;
+  final String place;
+  final DateTime dob;
+  final TimeOfDay time;
 
   const ChatScreen({
     super.key,
     required this.userName,
     required this.concern,
+    required this.place,
+    required this.dob,
+    required this.time,
   });
 
   @override
@@ -29,9 +36,10 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     _addMessage(
       "ai",
-      "Namaste ${widget.userName}. I am here to guide you. "
-      "The stars align to shed light on your ${widget.concern}. "
-      "Ask me anything, and we shall look into your Kundli.",
+      "Namaste ${widget.userName}. I have your birth chart details "
+      "(${DateFormat('dd/MM/yyyy').format(widget.dob)} at ${widget.place}). "
+      "I see your concern regarding ${widget.concern}. "
+      "Ask me your specific question.",
     );
   }
 
@@ -62,6 +70,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
     _addMessage("user", text);
     setState(() => _isLoading = true);
+    
+    _scrollToBottom();
 
     try {
       final apiKey = dotenv.env['API_KEY'];
@@ -70,19 +80,25 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
 
+      String formattedDate = DateFormat('dd/MM/yyyy').format(widget.dob);
+      String formattedTime = widget.time.format(context);
+
       final systemInstruction = """
 You are a professional Vedic astrologer.
-Speak calmly and wisely.
-Use astrology concepts like kundli, graha, dasha, lagna.
-Never say you are an AI.
-Give guidance, not absolute predictions.
-User Name: ${widget.userName}
-User Concern: ${widget.concern}
+User Details:
+- Name: ${widget.userName}
+- DOB: $formattedDate
+- Time: $formattedTime
+- Place: ${widget.place}
+- Concern: ${widget.concern}
+
+Instructions:
+1. You already have their birth details. DO NOT ask for them again.
+2. Calculate the planetary positions (Grahas, Lagna) mentally based on these details.
+3. Answer the user's question: "$text" specifically based on this data.
+4. Speak calmly and wisely. Never say you are an AI.
 """;
 
-      final fullPrompt = "$systemInstruction\n\nUser Question: $text";
-
-      // ✅ CORRECT MODEL (FROM YOUR PROJECT LIST)
       final url = Uri.parse(
         'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=$apiKey',
       );
@@ -94,7 +110,7 @@ User Concern: ${widget.concern}
           "contents": [
             {
               "parts": [
-                {"text": fullPrompt}
+                {"text": systemInstruction}
               ]
             }
           ]
@@ -145,88 +161,137 @@ User Concern: ${widget.concern}
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(16, 100, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 100, 16, 20),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final isUser = _messages[index]['role'] == 'user';
                   return Align(
                     alignment:
                         isUser ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      padding: const EdgeInsets.all(14),
-                      constraints: BoxConstraints(
-                        maxWidth:
-                            MediaQuery.of(context).size.width * 0.75,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(16),
-                          topRight: const Radius.circular(16),
-                          bottomLeft: isUser
-                              ? const Radius.circular(16)
-                              : Radius.zero,
-                          bottomRight: isUser
-                              ? Radius.zero
-                              : const Radius.circular(16),
+                    child: Column(
+                      crossAxisAlignment: isUser 
+                          ? CrossAxisAlignment.end 
+                          : CrossAxisAlignment.start,
+                      children: [
+                        // Name Label
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4, left: 4, right: 4),
+                          child: Text(
+                            isUser ? widget.userName : "Astrologer AI",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54, 
+                            ),
+                          ),
                         ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          )
-                        ],
-                      ),
-                      child: Text(
-                        _messages[index]['text']!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          height: 1.4,
+                        
+                        // Message Bubble
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(14),
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.75,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isUser 
+                                ? Colors.white 
+                                : Colors.orange.shade100, 
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(16),
+                              topRight: const Radius.circular(16),
+                              bottomLeft: isUser
+                                  ? const Radius.circular(16)
+                                  : Radius.zero,
+                              bottomRight: isUser
+                                  ? Radius.zero
+                                  : const Radius.circular(16),
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              )
+                            ],
+                          ),
+                          child: Text(
+                            _messages[index]['text']!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              height: 1.4,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   );
                 },
               ),
             ),
+            
+            // Loading Indicator
             if (_isLoading)
               const Padding(
-                padding: EdgeInsets.only(left: 20, bottom: 8),
+                padding: EdgeInsets.only(left: 20, bottom: 10),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Reading the stars...",
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: Colors.black54, 
+                      fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
               ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  hintText: "Ask the stars...",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.deepOrange,
+              
+            // Input Field
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
+                  )
+                ],
+              ),
+              child: SafeArea(
+                top: false,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          hintText: "Ask the stars...",
+                          hintStyle: TextStyle(color: Colors.grey),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                        onSubmitted: (_) => _sendMessage(),
+                      ),
                     ),
-                    onPressed: _sendMessage,
-                  ),
+                    const SizedBox(width: 8),
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF6A623),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.send, color: Colors.white),
+                        onPressed: _sendMessage,
+                      ),
+                    ),
+                  ],
                 ),
-                onSubmitted: (_) => _sendMessage(),
               ),
             ),
           ],
