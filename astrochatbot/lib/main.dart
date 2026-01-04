@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import dotenv
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Required for loading .env
 import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Load the environment variables from .env
-  await dotenv.load(fileName: ".env");
+  // 1. Load the environment variables first
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    print("Error loading .env file: $e");
+  }
 
-  // Initialize Firebase
+  // 2. Initialize Firebase
   await Firebase.initializeApp();
   
   runApp(const AstroChatbotApp());

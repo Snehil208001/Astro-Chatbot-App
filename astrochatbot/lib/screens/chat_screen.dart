@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Import this
 import '../widgets/astro_background.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -30,15 +31,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _initializeModel() {
     // ---------------------------------------------------------
-    // FIXED: Hardcoded Key to bypass .env errors
+    // FIXED: Load Key from .env securely
     // ---------------------------------------------------------
-    const apiKey = "AIzaSyAc4vYEetSpKmPCO_gCojLRyyTxLPfM_iU"; 
+    final apiKey = dotenv.env['API_KEY'];
 
-    print("✅ Using API Key: $apiKey");
+    if (apiKey == null || apiKey.isEmpty) {
+      print("❌ API Key missing! Check your .env file.");
+      _addMessage("ai", "System Error: API Key not found.");
+      return;
+    }
+
+    print("✅ API Key found.");
 
     try {
       _model = GenerativeModel(
-        // FIXED: Using 'gemini-1.5-flash' which works with this key type
         model: 'gemini-1.5-flash', 
         apiKey: apiKey,
         systemInstruction: Content.system("""
@@ -90,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       if (!_isModelInitialized) {
-        _addMessage("ai", "I cannot read the stars (API Key initialization failed).");
+        _addMessage("ai", "I cannot read the stars (Model not initialized).");
         return;
       }
 
@@ -107,7 +113,6 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       print("❌ EXCEPTION during API call: $e");
       if (e.toString().contains("404")) {
-         // This confirms the key is invalid for this specific model/project
          _addMessage("ai", "Error 404: The API Key project does not have the 'Generative Language API' enabled. Please enable it in Google Cloud Console.");
       } else {
          _addMessage("ai", "A spiritual disturbance occurred: $e");
