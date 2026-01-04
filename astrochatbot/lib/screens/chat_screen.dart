@@ -186,7 +186,6 @@ Instructions:
                           ),
                         ),
                         
-                        // Message Bubble
                         Container(
                           margin: const EdgeInsets.only(bottom: 16),
                           padding: const EdgeInsets.all(14),
@@ -231,7 +230,6 @@ Instructions:
               ),
             ),
             
-            // Loading Indicator
             if (_isLoading)
               const Padding(
                 padding: EdgeInsets.only(left: 20, bottom: 10),
@@ -248,7 +246,6 @@ Instructions:
                 ),
               ),
               
-            // Input Field
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: const BoxDecoration(

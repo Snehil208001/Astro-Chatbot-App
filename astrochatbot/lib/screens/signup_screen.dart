@@ -13,14 +13,12 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers to capture user input
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
 
-  // Function to handle Sign Up
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -28,22 +26,18 @@ class _SignupScreenState extends State<SignupScreen> {
       });
 
       try {
-        // Create user in Firebase
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
-        // Optional: You can update the display name here if needed
-        // await FirebaseAuth.instance.currentUser?.updateDisplayName(_nameController.text.trim());
+       
 
-        // If successful, navigate to Home
         if (mounted) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => const HomeScreen()));
         }
       } on FirebaseAuthException catch (e) {
-        // Show error message if signup fails
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -64,7 +58,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // Clean up controllers
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -76,7 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Transparent to show background
+        backgroundColor: Colors.transparent, 
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -117,7 +110,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Name Field
                   _buildField(
                     "Full Name",
                     Icons.person,
@@ -127,7 +119,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Email Field with validation
                   _buildField(
                     "Email",
                     Icons.email,
@@ -146,7 +137,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field with validation
                   _buildField(
                     "Password",
                     Icons.lock,
@@ -164,7 +154,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Sign Up Button with Loading Indicator
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -197,7 +186,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // Helper widget to keep code clean
   Widget _buildField(String hint, IconData icon,
       {bool obscure = false,
       TextEditingController? controller,

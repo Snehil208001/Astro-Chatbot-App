@@ -14,13 +14,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _formKey = GlobalKey<FormState>();
   
-  // Text Controllers for all inputs
   final TextEditingController nameController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
   final TextEditingController dateController = TextEditingController(); // Added
   final TextEditingController timeController = TextEditingController(); // Added
   
-  // State variables for logic
   String? selectedGender;
   String? selectedConcern;
   DateTime? selectedDate;
@@ -133,11 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 16),
                 
-                // Fixed Date Picker
                 _buildDatePicker(),
                 const SizedBox(height: 16),
                 
-                // Fixed Time Picker
                 _buildTimePicker(),
                 const SizedBox(height: 16),
                 
@@ -180,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // --- Helper Widgets ---
 
   Widget _buildField({
     required TextEditingController controller, 
@@ -224,11 +219,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // NEW: Uses TextFormField for consistent look
   Widget _buildDatePicker() {
     return TextFormField(
       controller: dateController,
-      readOnly: true, // Prevents keyboard from opening
+      readOnly: true, 
       decoration: InputDecoration(
         labelText: "Date of Birth",
         filled: true,
@@ -255,11 +249,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // NEW: Uses TextFormField for consistent look
   Widget _buildTimePicker() {
     return TextFormField(
       controller: timeController,
-      readOnly: true, // Prevents keyboard from opening
+      readOnly: true, 
       decoration: InputDecoration(
         labelText: "Time of Birth",
         filled: true,

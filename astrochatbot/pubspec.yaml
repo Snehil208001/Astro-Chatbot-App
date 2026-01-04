@@ -10,14 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  # Http is required for the REST API call
   http: ^1.2.0
   intl: ^0.19.0
   google_fonts: ^6.1.0
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   flutter_dotenv: ^5.1.0
-  # REMOVED: google_generative_ai (It was causing the v1beta crash)
 
 dev_dependencies:
   flutter_test:

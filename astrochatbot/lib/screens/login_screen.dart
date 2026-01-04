@@ -16,18 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // State variable to track loading status
   bool _isLoading = false;
 
-  // Function to handle Login
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true; // Start loading
+        _isLoading = true; 
       });
 
       try {
-        // Sign in with Firebase
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
@@ -40,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } on FirebaseAuthException catch (e) {
-        // Show error message if login fails
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -52,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } finally {
         if (mounted) {
           setState(() {
-            _isLoading = false; // Stop loading regardless of success/failure
+            _isLoading = false; 
           });
         }
       }
@@ -95,7 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Email Input with Validation
                   TextFormField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -116,7 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (v == null || v.isEmpty) {
                         return "Enter email";
                       }
-                      // Basic email regex validation
                       final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                       if (!emailRegex.hasMatch(v)) {
                         return "Enter a valid email address";
@@ -147,7 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Login Button with Loading Indicator
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -158,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       elevation: 4,
                     ),
-                    onPressed: _isLoading ? null : _login, // Disable if loading
+                    onPressed: _isLoading ? null : _login, 
                     child: _isLoading
                         ? const SizedBox(
                             height: 24,
@@ -176,7 +169,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Sign Up Button
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       side:
