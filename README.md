@@ -32,6 +32,21 @@ A short video demonstration of the application showcasing:
 📌 **Google Drive Link:**  
 https://drive.google.com/file/d/1mZ1WJ4I634WBDh9CW2eNtdNSUCWeVR35/view?usp=sharing
 
+## 📦 Debug APK Download
+
+A debug APK is provided for quick testing without setting up the Flutter environment.
+
+📌 **Google Drive Link:**  
+https://drive.google.com/file/d/1nf8sShdo9mCOzdlrDwT16c5IE_xXw6f0/view?usp=sharing
+
+**Steps to install:**
+1. Download the APK from the link above  
+2. Enable *Install from unknown sources* on your Android device  
+3. Install and run the app  
+
+⚠️ This is a debug build and intended for evaluation purposes only.
+
+
 
 🎯 Objective
 
